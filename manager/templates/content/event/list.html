@@ -1,0 +1,23 @@
+{% extends "content/base.html" %}
+{% block title %}My Blog{% endblock %}
+{% block content %}
+
+    <h1>My Blog</h1>
+    {% for posts in contents %}
+
+
+    <h2>
+        <a href="{{ posts.get_absolute_url }}">
+        {{ posts.title }}
+        </a>
+    
+    </h2>
+
+
+    <p class="date" style="color:#070707; font-family: georgia, serif; font-size: 15px; font-style: italic;">
+    Published {{ posts.publish }} by {{ posts.author }}
+    </p>
+    {{ posts.body|truncatewords:30|linebreaks }}
+    {% endfor %}
+    
+{% endblock %}
