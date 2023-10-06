@@ -9,5 +9,9 @@
   </p>
   {{ detail.body|linebreaks }}
   <p>
+    <a href="{% url "content:service_share" detail.id %}">
+      Share this post
+    </a>
+  </p>
  
 {% endblock %}

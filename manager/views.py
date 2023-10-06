@@ -1,3 +1,4 @@
+from email.mime.multipart import MIMEMultipart
 from django.shortcuts import render,get_object_or_404
 
 from django.views.generic import ListView
@@ -32,27 +33,22 @@ class ListHome(ListView):
 
 
 
-def detail_services(request,year,month,day,content):
+def detail_services(request,content,year,month,day):
 
-    detail_services = get_object_or_404(Content,
-                                        status = Content.Status.PUBLISHED,
-                                        publish__year = year,
-                                        publish__month = month,
-                                        publish__day = day,
-                                        slug = content)
+    detail = get_object_or_404(Content,
+                               status = Content.Status.PUBLISHED,
+                               publish__year= year,
+                               publish__month=month,
+                               publish__day = day,
+                               slug = content)
     
-    return render(request,'content/event/detail.html',{'detail':detail_services})
+    return render(request,'content/event/detail.html',{'detail':detail})
 
 
 
+def service_request(request,service_id):
 
-
-
-
-
-def send_an_aplication(request,send_aplication_id):
-
-    application = get_object_or_404(Content,id=send_aplication_id,status = Content.Status.PUBLISHED)
+    service_application = get_object_or_404(Content,id=service_id,status = Content.Status.PUBLISHED)
 
     sent = False
 
@@ -61,28 +57,35 @@ def send_an_aplication(request,send_aplication_id):
         form_share = EmailForm(request.POST)
 
         if form_share.is_valid():
-
+            
             cd = form_share.cleaned_data
 
-            application_url = request.get_absolute_uri(application.get_absolute_url())
+            post_url = request.build_absolute_uri(service_application.get_absolute_url())
 
-            subject = f"{cd['name']} reccomends you read {application.title}"
+            subject = f"{cd['name']} recommends you read {service_application.title}"
 
-            message = f"Read {application.title} at {application_url}"
-
-            send_mail(subject,message,'kaznacheev724@gmail.com',to=['kaznacheev724'])
+            message = f"Read {service_application.title} at {post_url}\n\n"
+            f" {cd['name']} comments: {cd['comments']}"
+        
+            send_mail(subject,message,'',
+                      [cd['to']])
 
             sent = True
+
+
+
+
 
     else:
         form_share = EmailForm()
 
-    return render(request,'content/event/share.html',{'form_share':form_share,
+    return render(request,'content/event/share.html',{'service_application':service_application,
                                                       'sent':sent,
-                                                      'application':application})
+                                                      'form_share':form_share})
 
 
 
-def comment_application(request,application_id):
 
+def comment_service(request,service_id):
     pass
+

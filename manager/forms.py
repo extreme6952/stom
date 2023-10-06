@@ -13,9 +13,9 @@ class EmailForm(forms.Form):
 
     to = forms.EmailField()
 
-    comment = forms.CharField(required=False,
-                              widget=forms.Textarea)
     
+    comments = forms.CharField(required=False,
+                                                 widget=forms.Textarea)
 
 class CommentForm(forms.ModelForm):
 
